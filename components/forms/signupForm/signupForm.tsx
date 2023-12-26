@@ -1,27 +1,24 @@
 import React from "react";
-import { CardElement } from "@stripe/react-stripe-js";
 import { useRouter } from "next/navigation";
 
 interface SignupProps {
-  handleSignUp: (index: React.FormEvent<HTMLFormElement>) => void;
+  fullName: string;
   email: string;
-  setEmail: (index: string) => void;
   password: string;
+  setFullName: (index: string) => void;
+  setEmail: (index: string) => void;
   setPassword: (index: string) => void;
-  selectedPlan: string;
-  setSelectedPlan: (index: string) => void;
-  cardError: string;
+  handleSignUp: (index: React.FormEvent<HTMLFormElement>) => void;
 }
 
 const SignupForm = ({
-  handleSignUp,
+  fullName,
   email,
-  setEmail,
   password,
+  setFullName,
+  setEmail,
   setPassword,
-  selectedPlan,
-  setSelectedPlan,
-  cardError,
+  handleSignUp,
 }: SignupProps) => {
   const router = useRouter();
 
@@ -31,6 +28,18 @@ const SignupForm = ({
         <h2 className="text-3xl font-semibold mb-6 text-center">SignUp</h2>
 
         <form onSubmit={handleSignUp}>
+          <div className="mb-6">
+            <label className="block mb-2 font-semibold">Full Name:</label>
+
+            <input
+              type="text"
+              placeholder="Full Name"
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              required
+            />
+          </div>
           <div className="mb-6">
             <label className="block mb-2 font-semibold">Email:</label>
 
@@ -55,7 +64,7 @@ const SignupForm = ({
               required
             />
           </div>
-          <div className="mb-6">
+          {/* <div className="mb-6">
             <label className="block mb-2 font-semibold">Select a Plan:</label>
             <select
               className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
@@ -69,8 +78,8 @@ const SignupForm = ({
               <option value="standard">Standard Plan - $500 per month</option>
               <option value="premium">Premium Plan - $3000 per month</option>
             </select>
-          </div>
-          <div className="mb-6">
+          </div> */}
+          {/* <div className="mb-6">
             <CardElement
               options={{
                 style: {
@@ -87,10 +96,7 @@ const SignupForm = ({
                 },
               }}
             />
-            {cardError && (
-              <p className="text-red-500 text-sm mt-2">{cardError}</p>
-            )}
-          </div>
+          </div> */}
           <button
             type="submit"
             className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-300"

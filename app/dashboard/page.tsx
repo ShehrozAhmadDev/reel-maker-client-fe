@@ -20,6 +20,4 @@ const Dashboard = () => {
   );
 };
 
-// Placeholder content for Dashboard
-
 export default Dashboard;

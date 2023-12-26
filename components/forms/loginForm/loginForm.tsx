@@ -1,4 +1,5 @@
 "use client";
+import Login from "@/services/login";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -7,8 +8,16 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = () => {
-    // Handle login logic here
+  const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    Login.postLogin(email, password)
+      .then(({ data }) => {
+        console.log({ data });
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
   };
 
   return (
