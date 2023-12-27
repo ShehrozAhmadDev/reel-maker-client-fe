@@ -42,7 +42,7 @@ const Chat = () => {
             key={index}
             className="flex justify-between items-center bg-gray-200 rounded-md p-2 mb-2"
           >
-            <span className="flex flex-col w-[95%] justify-start">
+            <span className="flex flex-col w-[90%] justify-start">
               {msg.image && (
                 <Image
                   src={msg.image}

@@ -2,8 +2,13 @@
 import Login from "@/services/login";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Cookie from "js-cookie";
+import { setUser } from "@/redux/features/user-slice";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const LoginForm = () => {
+  const dispatch = useDispatch();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,8 +16,21 @@ const LoginForm = () => {
   const handleLogin = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     Login.postLogin(email, password)
-      .then(({ data }) => {
+      .then((data) => {
         console.log({ data });
+        if (data?.status === 200) {
+          Cookie.set("token", data?.token);
+          Cookie.set("role", "user");
+          dispatch(
+            setUser({
+              fullName: data?.fullName,
+              email: data?.email,
+            })
+          );
+          toast.success("Loggin In...");
+          router.push("/dashboard");
+          router.refresh();
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -21,7 +39,7 @@ const LoginForm = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100 text-black">
+    <div className="flex justify-center items-center h-screen bg-gray-100 text-black ">
       <div className="w-full max-w-md m-4 p-8 bg-white rounded-lg shadow-lg">
         <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>
         <form onSubmit={handleLogin}>
