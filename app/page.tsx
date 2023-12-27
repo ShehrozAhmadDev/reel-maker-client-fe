@@ -1,7 +1,18 @@
-export default function Home() {
+"use client";
+import FeatureSection from "@/components/featureSection/featureSection";
+import HeroSection from "@/components/heroSection/heroSection";
+import MainLayout from "@/providers/mainLayout/mainLayout";
+import React from "react";
+
+const Home = () => {
   return (
-    <div className=" min-h-screen w-full flex justify-center items-center text-black">
-      Landing Page...
+    <div className="max-w-[1460px] mx-auto">
+      <MainLayout>
+        <HeroSection />
+        <FeatureSection />
+      </MainLayout>
     </div>
   );
-}
+};
+
+export default Home;
