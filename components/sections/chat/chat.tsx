@@ -1,144 +1,24 @@
 import { useAppSelector } from "@/redux/store";
 import Image from "next/image";
-import { useState, useRef, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import InputEmoji from "react-input-emoji";
 import { io, Socket } from "socket.io-client";
 import axios from "axios";
 import Cookie from "js-cookie";
 import moment from "moment";
-
-const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
-
-interface IConversation {
-  members: string[];
-  _id: string;
-}
-
-interface IArrvalMessage {
-  senderId: string;
-  text: string;
-  createdAt: string | number;
-  image?: string;
-}
+import useChat from "@/hooks/chat/useChat";
 
 const Chat = () => {
-  const [messages, setMessages] = useState<IArrvalMessage[]>([]);
-  const [message, setMessage] = useState<string>("");
-  const [imageURL, setImageURL] = useState<string>("");
-  const socket = useRef<Socket>(io("ws://localhost:4000"));
-  const [currentChat, setCurrentChat] = useState<IConversation | null>(null);
-  const [arrivalMessage, setArrivalMessage] = useState<IArrvalMessage | null>(
-    null
-  );
-  const [loading, setLoading] = useState(false);
-  const { user } = useAppSelector((state) => state.userReducer.value);
-  const handleSendClick = async () => {
-    const token = Cookie.get("token");
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    const sendMessage = {
-      senderId: user && user.id,
-      text: message,
-      conversationId: currentChat && currentChat._id,
-    };
-    const receiverId =
-      user &&
-      currentChat &&
-      currentChat.members.find((member) => member !== user.id);
-    socket.current.emit("sendMessage", {
-      senderId: user && user.id,
-      receiverId,
-      text: message,
-    });
-    try {
-      const res = await axios.post(`${baseUrl}/message`, sendMessage, config);
-      setMessages([...messages, res.data]);
-      setMessage("");
-      setImageURL("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setImageURL(URL.createObjectURL(files[0]));
-    }
-  };
-
-  useEffect(() => {
-    arrivalMessage &&
-      currentChat?.members.includes(arrivalMessage.senderId) &&
-      setMessages((prev) => [...prev, arrivalMessage]);
-  }, [arrivalMessage, currentChat]);
-
-  useEffect(() => {
-    if (user) socket.current.emit("addUser", user.id);
-  }, [user]);
-
-  useEffect(() => {
-    socket.current.on("getMessage", (data) => {
-      setArrivalMessage({
-        senderId: data.senderId,
-        text: data.text,
-        createdAt: new Date().toISOString(),
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    const getConversationWithAdmin = async () => {
-      try {
-        setLoading(true);
-        const token = Cookie.get("token");
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        if (user) {
-          const res = await axios.get(
-            `${baseUrl}/conversation/${user.id}`,
-            config
-          );
-          if (res.data.length > 0) {
-            setCurrentChat(res.data[0]);
-            setLoading(false);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getConversationWithAdmin();
-  }, []);
-
-  useEffect(() => {
-    const getMessages = async () => {
-      try {
-        const token = Cookie.get("token");
-        const config = {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        };
-        if (currentChat?._id) {
-          const res = await axios.get(
-            baseUrl + "/message/" + currentChat?._id,
-            config
-          );
-          setMessages(res.data);
-        }
-      } catch (err) {
-        console.log(err);
-      }
-    };
-    getMessages();
-  }, [currentChat]);
+  const {
+    loading,
+    message,
+    messages,
+    user,
+    scrollRef,
+    setMessage,
+    handleSendClick,
+    handleImageChange,
+  } = useChat();
 
   return (
     <div className="bg-gray-100 p-4 rounded-lg shadow-md">
@@ -146,7 +26,7 @@ const Chat = () => {
       {loading ? (
         <p>Loading....</p>
       ) : (
-        <div className="max-h-96 pr-5 overflow-y-auto">
+        <div className="h-[calc(100vh-180px)] pr-5 overflow-y-auto">
           {messages?.map((msg, index) => (
             <div
               key={index}
@@ -155,6 +35,7 @@ const Chat = () => {
               }  ${
                 msg.senderId === user?.id ? `bg-purple-500` : `bg-gray-200`
               }  rounded-md p-2 py-4 mb-2`}
+              ref={scrollRef}
             >
               <span className="flex flex-col w-fit justify-start">
                 {msg.image && (
@@ -210,7 +91,7 @@ const Chat = () => {
         </label>
         <button
           onClick={handleSendClick}
-          className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+          className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
         >
           Send
         </button>
