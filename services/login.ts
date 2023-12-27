@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Login = {
@@ -9,7 +10,7 @@ const Login = {
         password: password,
       })
       .then((res) => res.data)
-      .catch((error) => console.log(error));
+      .catch((error) => toast.error(error?.response?.data?.message));
   },
 };
 

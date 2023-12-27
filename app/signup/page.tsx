@@ -1,14 +1,31 @@
 "use client";
 import { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
 import SignupForm from "@/components/forms/signupForm/signupForm";
+import Signup from "@/services/signup";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 const SignUp = () => {
+  const router = useRouter();
   const [fullName, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleSignUp = async (event: React.FormEvent<HTMLFormElement>) => {};
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    Signup.postSignup(fullName, email, password)
+      .then((data) => {
+        toast.success(data?.message);
+        console.log({ data });
+        setTimeout(() => {
+          router.push("/login");
+        }, 1500);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {});
+  };
 
   return (
     <SignupForm
