@@ -9,7 +9,7 @@ const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState("dashboard");
 
   return (
-    <div className="flex bg-white text-black/[.80]">
+    <div className="flex bg-gradient-to-r from-purple-500 to-blue-500 text-black/[.80]">
       <Sidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
       <div className="w-3/4 p-6">
         {selectedTab === "dashboard" && <DashboardContent />}

@@ -4,6 +4,7 @@ import SignupForm from "@/components/forms/signupForm/signupForm";
 import Signup from "@/services/signup";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import MainLayout from "@/providers/mainLayout/mainLayout";
 
 const SignUp = () => {
   const router = useRouter();
@@ -15,11 +16,13 @@ const SignUp = () => {
     e.preventDefault();
     Signup.postSignup(fullName, email, password)
       .then((data) => {
-        toast.success(data?.message);
-        console.log({ data });
-        setTimeout(() => {
-          router.push("/login");
-        }, 1500);
+        if (data?.status === 200) {
+          toast.success(data?.message);
+          console.log({ data });
+          setTimeout(() => {
+            router.push("/login");
+          }, 1500);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -28,15 +31,17 @@ const SignUp = () => {
   };
 
   return (
-    <SignupForm
-      fullName={fullName}
-      email={email}
-      password={password}
-      setFullName={setFullName}
-      setEmail={setEmail}
-      setPassword={setPassword}
-      handleSignUp={handleSignUp}
-    />
+    <MainLayout>
+      <SignupForm
+        fullName={fullName}
+        email={email}
+        password={password}
+        setFullName={setFullName}
+        setEmail={setEmail}
+        setPassword={setPassword}
+        handleSignUp={handleSignUp}
+      />
+    </MainLayout>
   );
 };
 

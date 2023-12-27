@@ -23,14 +23,14 @@ const SignupForm = ({
   const router = useRouter();
 
   return (
-    <div className="flex justify-center items-center h-screen text-black bg-gray-100">
-      <div className="w-full max-w-md m-4 p-8 bg-white rounded-lg shadow-lg">
-        <h2 className="text-3xl font-semibold mb-6 text-center">SignUp</h2>
+    <div className="flex justify-center items-center h-[calc(100vh-160px)] text-black bg-gradient-to-r from-purple-600 to-pink-500">
+      <div className="w-full max-w-md m-4 p-8 bg-white rounded-lg shadow-2xl">
+        <h2 className="text-3xl font-semibold mb-6 text-center  gradient-text">
+          SignUp
+        </h2>
 
         <form onSubmit={handleSignUp}>
           <div className="mb-6">
-            <label className="block mb-2 font-semibold">Full Name:</label>
-
             <input
               type="text"
               placeholder="Full Name"
@@ -41,8 +41,6 @@ const SignupForm = ({
             />
           </div>
           <div className="mb-6">
-            <label className="block mb-2 font-semibold">Email:</label>
-
             <input
               type="email"
               placeholder="Email"
@@ -53,8 +51,6 @@ const SignupForm = ({
             />
           </div>
           <div className="mb-6">
-            <label className="block mb-2 font-semibold">Password:</label>
-
             <input
               type="password"
               placeholder="Password"
@@ -99,15 +95,15 @@ const SignupForm = ({
           </div> */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-md hover:bg-blue-600 transition duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-md hover:opacity-80 transition-all duration-300"
           >
             Sign Up
           </button>
         </form>
         <span className="w-full flex justify-end">
           <p
-            className="underline w-fit font-bold cursor-pointer text-blue-400 mt-2  hover:opacity-85 "
-            onClick={() => router.push("/")}
+            className="underline w-fit font-bold cursor-pointer text-purple-500 mt-2  hover:opacity-85 "
+            onClick={() => router.push("/login")}
           >
             Login
           </p>
