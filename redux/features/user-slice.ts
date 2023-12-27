@@ -5,6 +5,7 @@ interface InitialState {
 }
 
 interface userI {
+  id: string;
   fullName: string;
   email: string;
 }

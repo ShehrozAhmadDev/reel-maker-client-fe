@@ -20,9 +20,10 @@ const LoginForm = () => {
         console.log({ data });
         if (data?.status === 200) {
           Cookie.set("token", data?.token);
-          Cookie.set("role", "user");
+          Cookie.set("role", data?.role);
           dispatch(
             setUser({
+              id: data._id,
               fullName: data?.fullName,
               email: data?.email,
             })
