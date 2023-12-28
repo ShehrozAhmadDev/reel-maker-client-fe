@@ -103,7 +103,9 @@ const useChat = () => {
           const data = await Conversation.getUserConversation(user.id, token);
           if (data.length > 0) {
             setCurrentChat(data[0]);
-            setLoading(false);
+            setTimeout(() => {
+              setLoading(false);
+            }, 1000);
           }
         }
       } catch (error) {

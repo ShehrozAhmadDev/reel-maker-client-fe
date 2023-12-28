@@ -1,64 +1,81 @@
 import { useState } from "react";
+import RichTextEditor from "./RichTextEditor";
+import AddProject from "@/services/addProject";
+import { toast } from "react-toastify";
+import Cookie from "js-cookie";
 
-const VideoUploadSection = () => {
-  const [video, setVideo] = useState(null);
+const VideoForm = () => {
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  const [descriptionContent, setDescriptionContent] = useState("");
 
-  const handleVideoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const token = Cookie.get("token");
 
-    if (files && files.length > 0) {
-      const selectedFile = files[0];
-    } else {
-      console.log("No file selected.");
+    try {
+      if (title && link && descriptionContent) {
+        await AddProject.postAddProject(token, title, link, descriptionContent);
+
+        // setTitle("");
+        // setLink("");
+        // setDescriptionContent("");
+      } else {
+        toast.error("Fields can't be empty");
+      }
+    } catch (error) {
+      toast.error("Project can't be added");
+      console.error("Error:", error);
     }
   };
 
   return (
-    <div>
-      <h2 className="text-4xl font-bold mb-4 text-white">Upload Video</h2>
-
-      <div className="bg-white p-8 rounded-lg shadow-md">
-        <div className="flex items-center justify-center mb-8">
-          <label
-            htmlFor="videoUpload"
-            className="flex items-center justify-center w-20 h-20 border-2 border-dashed rounded-lg cursor-pointer"
-          >
-            {video ? (
-              <video
-                src={URL.createObjectURL(video)}
-                className="w-full h-full object-cover rounded-lg"
-                controls
-              />
-            ) : (
-              <svg
-                className="w-8 h-8 text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                />
-              </svg>
-            )}
-            <input
-              type="file"
-              id="videoUpload"
-              accept="video/*"
-              className="hidden"
-              onChange={handleVideoChange}
-            />
+    <div className=" p-4">
+      <h2 className="text-4xl font-bold mb-8 text-white">Video Upload</h2>
+      <form className="bg-transparent" onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="title" className="block text-white mb-1">
+            Title:
           </label>
+          <input
+            id="title"
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="border-2 border-gray-300 rounded-md p-2 w-full"
+            placeholder="Enter title"
+          />
         </div>
-        <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300">
-          Upload
+        <div className="mb-4">
+          <label htmlFor="link" className="block text-white mb-1">
+            Link:
+          </label>
+          <input
+            id="link"
+            type="text"
+            value={link}
+            onChange={(e) => setLink(e.target.value)}
+            className="border-2 border-gray-300 rounded-md p-2 w-full"
+            placeholder="Enter video link"
+          />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="description" className="block text-white mb-1">
+            Description:
+          </label>
+          <div className="border-2 border-gray-300 rounded-md">
+            <RichTextEditor setDescriptionContent={setDescriptionContent} />
+          </div>
+        </div>
+        <button
+          type="submit"
+          className="w-[300px] bg-blue-500 text-white px-4 py-3 rounded-md hover:bg-blue-600 transition duration-300"
+        >
+          Submit
         </button>
-      </div>
+      </form>
     </div>
   );
 };
 
-export default VideoUploadSection;
+export default VideoForm;

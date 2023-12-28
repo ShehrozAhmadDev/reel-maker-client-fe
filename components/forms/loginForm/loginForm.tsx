@@ -1,7 +1,7 @@
 "use client";
 import Login from "@/services/login";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { useState } from "react";
 import Cookie from "js-cookie";
 import { setUser } from "@/redux/features/user-slice";
 import { useDispatch } from "react-redux";
@@ -17,7 +17,6 @@ const LoginForm = () => {
     e.preventDefault();
     Login.postLogin(email, password)
       .then((data) => {
-        console.log({ data });
         if (data?.status === 200) {
           Cookie.set("token", data?.token);
           Cookie.set("role", data?.role);

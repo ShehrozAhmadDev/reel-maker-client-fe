@@ -18,7 +18,6 @@ const SignUp = () => {
       .then((data) => {
         if (data?.status === 200) {
           toast.success(data?.message);
-          console.log({ data });
           setTimeout(() => {
             router.push("/login");
           }, 1500);

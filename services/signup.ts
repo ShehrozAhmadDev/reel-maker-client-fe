@@ -10,7 +10,7 @@ const Signup = {
         password: password,
       })
       .then((res) => res.data)
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   },
 };
 

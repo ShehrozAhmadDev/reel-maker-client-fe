@@ -2,7 +2,7 @@
 import Chat from "@/components/sections/chat/chat";
 import DashboardContent from "@/components/sections/dashboard/dashboard";
 import SettingsComponent from "@/components/sections/settings/settings";
-import VideoUpload from "@/components/sections/videoUpload/videoUpload";
+import VideoForm from "@/components/sections/videoUpload/videoUpload";
 import Sidebar from "@/components/sidebar/sidebar";
 import { useState } from "react";
 
@@ -15,7 +15,7 @@ const Dashboard = () => {
       <div className="w-3/4 p-6">
         {selectedTab === "dashboard" && <DashboardContent />}
         {selectedTab === "chat" && <Chat />}
-        {selectedTab === "video-upload" && <VideoUpload />}
+        {selectedTab === "video-upload" && <VideoForm />}
         {selectedTab === "settings" && <SettingsComponent />}
       </div>
     </div>
