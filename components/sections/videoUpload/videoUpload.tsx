@@ -16,10 +16,10 @@ const VideoForm = () => {
     try {
       if (title && link && descriptionContent) {
         await AddProject.postAddProject(token, title, link, descriptionContent);
-
-        // setTitle("");
-        // setLink("");
-        // setDescriptionContent("");
+        setTitle("");
+        setLink("");
+        setDescriptionContent("");
+        toast.success("Project has been added");
       } else {
         toast.error("Fields can't be empty");
       }
