@@ -66,8 +66,17 @@ const useChat = () => {
 
         if (user) {
           const data = await Conversation.getUserConversation(user.id, token);
+          console.log(data);
           if (data.length > 0) {
             setCurrentChat(data[0]);
+            setLoading(false);
+          } else if (data.length === 0 && !currentChat) {
+            const newConversation = await Conversation.createNewConversation(
+              user.id,
+              token
+            );
+            console.log({ newConversation });
+            setCurrentChat(newConversation?.conversation);
             setLoading(false);
           }
         }
@@ -75,9 +84,8 @@ const useChat = () => {
         console.log(error);
       }
     };
-
     getConversationWithAdmin();
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -99,6 +107,9 @@ const useChat = () => {
   }, [currentChat]);
 
   const handleSendClick = async () => {
+    if (message.length <= 0) {
+      return;
+    }
     const token = Cookie.get("token");
     const sendMessage: IMessage = {
       senderId: user && user.id,
