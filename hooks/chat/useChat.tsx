@@ -103,10 +103,10 @@ const useChat = () => {
           const data = await Conversation.getUserConversation(user.id, token);
           if (data.length > 0) {
             setCurrentChat(data[0]);
-            setTimeout(() => {
-              setLoading(false);
-            }, 1000);
           }
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
         }
       } catch (error) {
         console.log(error);
