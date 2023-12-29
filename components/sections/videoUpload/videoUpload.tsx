@@ -3,11 +3,13 @@ import RichTextEditor from "./RichTextEditor";
 import AddProject from "@/services/addProject";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
+import { useAppSelector } from "@/redux/store";
 
 const VideoForm = () => {
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [descriptionContent, setDescriptionContent] = useState("");
+  const { user } = useAppSelector((state) => state.userReducer.value);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -15,7 +17,13 @@ const VideoForm = () => {
 
     try {
       if (title && link && descriptionContent) {
-        await AddProject.postAddProject(token, title, link, descriptionContent);
+        await AddProject.postAddProject(
+          token,
+          title,
+          link,
+          descriptionContent,
+          user?.id
+        );
         setTitle("");
         setLink("");
         setDescriptionContent("");

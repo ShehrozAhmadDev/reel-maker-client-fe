@@ -7,9 +7,9 @@ const AddProject = {
     token: string | undefined,
     title: string,
     link: string,
-    description: string
+    description: string,
+    createdBy?: string
   ) => {
-    console.log({ title, link, description });
     return axios
       .post(
         `${baseUrl}/project`,
@@ -17,6 +17,7 @@ const AddProject = {
           title: title,
           link: link,
           description: description,
+          createdBy: createdBy
         },
         {
           headers: {
