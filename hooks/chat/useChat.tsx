@@ -101,23 +101,15 @@ const useChat = () => {
 
         if (user) {
           const data = await Conversation.getUserConversation(user.id, token);
-          console.log(data);
           if (data.length > 0) {
             setCurrentChat(data[0]);
-
-            setLoading(false);
           } else if (data.length === 0 && !currentChat) {
             const newConversation = await Conversation.createNewConversation(
               user.id,
               token
             );
-            console.log({ newConversation });
             setCurrentChat(newConversation?.conversation);
-            setLoading(false);
           }
-          setTimeout(() => {
-            setLoading(false);
-          }, 1000);
         }
       } catch (error) {
         console.log(error);
@@ -136,6 +128,7 @@ const useChat = () => {
             token
           );
           setMessages(data);
+          setLoading(false);
         }
       } catch (err) {
         console.log(err);
@@ -144,7 +137,6 @@ const useChat = () => {
 
     getMessages();
   }, [currentChat]);
-
 
   useEffect(() => {
     arrivalMessage &&
@@ -155,15 +147,16 @@ const useChat = () => {
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
   return {
-    user,
     loading,
     message,
     messages,
+    user,
     scrollRef,
     setMessage,
-    handleImageChange,
     handleSendClick,
+    handleImageChange,
   };
 };
 

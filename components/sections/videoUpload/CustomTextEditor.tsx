@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
@@ -8,7 +8,7 @@ interface RichTextEditorProps {
   setDescriptionContent: (index: string) => void;
 }
 
-const RichTextEditor = ({
+const CustomTextEditor = ({
   editorHtml,
   setEditorHtml,
   setDescriptionContent,
@@ -64,4 +64,4 @@ const RichTextEditor = ({
   );
 };
 
-export default RichTextEditor;
+export default CustomTextEditor;

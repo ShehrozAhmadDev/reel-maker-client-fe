@@ -1,9 +1,9 @@
 import { useState } from "react";
-import RichTextEditor from "./RichTextEditor";
 import AddProject from "@/services/addProject";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
+import CustomTextEditor from "./CustomTextEditor";
 
 const VideoForm = () => {
   const { user } = useAppSelector((state) => state.userReducer.value);
@@ -75,7 +75,7 @@ const VideoForm = () => {
             Description:
           </label>
           <div className="border-2 border-gray-300 rounded-md">
-            <RichTextEditor
+            <CustomTextEditor
               editorHtml={editorHtml}
               setEditorHtml={setEditorHtml}
               setDescriptionContent={setDescriptionContent}
