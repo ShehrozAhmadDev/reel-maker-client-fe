@@ -33,6 +33,41 @@ const useChat = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
+  const handleSendClick = async () => {
+    if (message.length <= 0) return;
+    const token = Cookie.get("token");
+    const sendMessage: IMessage = {
+      senderId: user && user.id,
+      text: message,
+      conversationId: currentChat && currentChat._id,
+    };
+    const receiverId =
+      user &&
+      currentChat &&
+      currentChat.members.find((member) => member !== user.id);
+    socket?.emit("sendMessage", {
+      senderId: user && user.id,
+      receiverId,
+      text: message,
+    });
+
+    try {
+      const data = await Message.sendMessage(sendMessage, token);
+      setMessages([...messages, data]);
+      setMessage("");
+      setImageURL("");
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      setImageURL(URL.createObjectURL(files[0]));
+    }
+  };
+
   useEffect(() => {
     const newSocket = io(SOCKET_URL);
     setSocket(newSocket);
@@ -69,6 +104,7 @@ const useChat = () => {
           console.log(data);
           if (data.length > 0) {
             setCurrentChat(data[0]);
+
             setLoading(false);
           } else if (data.length === 0 && !currentChat) {
             const newConversation = await Conversation.createNewConversation(
@@ -79,6 +115,9 @@ const useChat = () => {
             setCurrentChat(newConversation?.conversation);
             setLoading(false);
           }
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
         }
       } catch (error) {
         console.log(error);
@@ -106,42 +145,6 @@ const useChat = () => {
     getMessages();
   }, [currentChat]);
 
-  const handleSendClick = async () => {
-    if (message.length <= 0) {
-      return;
-    }
-    const token = Cookie.get("token");
-    const sendMessage: IMessage = {
-      senderId: user && user.id,
-      text: message,
-      conversationId: currentChat && currentChat._id,
-    };
-    const receiverId =
-      user &&
-      currentChat &&
-      currentChat.members.find((member) => member !== user.id);
-    socket?.emit("sendMessage", {
-      senderId: user && user.id,
-      receiverId,
-      text: message,
-    });
-
-    try {
-      const data = await Message.sendMessage(sendMessage, token);
-      setMessages([...messages, data]);
-      setMessage("");
-      setImageURL("");
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (files && files.length > 0) {
-      setImageURL(URL.createObjectURL(files[0]));
-    }
-  };
 
   useEffect(() => {
     arrivalMessage &&

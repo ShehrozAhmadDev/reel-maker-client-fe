@@ -20,7 +20,9 @@ const Chat = () => {
       <h2 className="text-2xl font-bold mb-4 text-white">Chat</h2>
       <div className="bg-transparent border border-white/[.20] rounded-lg shadow-md">
         {loading ? (
-          <p className="text-white font-bold my-2">Loading....</p>
+          <p className="text-white font-bold my-2 p-4">Loading....</p>
+        ) : messages.length === 0 ? (
+          <p className="text-white font-bold my-2 p-4">No chat to show</p>
         ) : (
           <div className="h-[calc(100vh-190px)] overflow-y-auto p-4 ">
             {messages?.map((msg, index) => (
