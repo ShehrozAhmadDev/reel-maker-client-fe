@@ -3,12 +3,16 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 
 interface RichTextEditorProps {
+  editorHtml: string;
+  setEditorHtml: (index: string) => void;
   setDescriptionContent: (index: string) => void;
 }
 
-const RichTextEditor = ({ setDescriptionContent }: RichTextEditorProps) => {
-  const [editorHtml, setEditorHtml] = useState("");
-
+const RichTextEditor = ({
+  editorHtml,
+  setEditorHtml,
+  setDescriptionContent,
+}: RichTextEditorProps) => {
   const modules = {
     toolbar: [
       [{ header: "1" }, { header: "2" }, { font: [] }],

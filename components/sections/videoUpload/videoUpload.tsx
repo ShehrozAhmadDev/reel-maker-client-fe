@@ -6,10 +6,12 @@ import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
 
 const VideoForm = () => {
+  const { user } = useAppSelector((state) => state.userReducer.value);
+
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [descriptionContent, setDescriptionContent] = useState("");
-  const { user } = useAppSelector((state) => state.userReducer.value);
+  const [editorHtml, setEditorHtml] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -27,6 +29,7 @@ const VideoForm = () => {
         setTitle("");
         setLink("");
         setDescriptionContent("");
+        setEditorHtml("");
         toast.success("Project has been added");
       } else {
         toast.error("Fields can't be empty");
@@ -72,7 +75,11 @@ const VideoForm = () => {
             Description:
           </label>
           <div className="border-2 border-gray-300 rounded-md">
-            <RichTextEditor setDescriptionContent={setDescriptionContent} />
+            <RichTextEditor
+              editorHtml={editorHtml}
+              setEditorHtml={setEditorHtml}
+              setDescriptionContent={setDescriptionContent}
+            />
           </div>
         </div>
         <button
