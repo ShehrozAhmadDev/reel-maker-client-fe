@@ -34,7 +34,7 @@ const Chat = () => {
                 ref={scrollRef}
               >
                 <div
-                  className={`flex flex-col w-[450px] ${
+                  className={`flex flex-col w-[420px] ${
                     msg.senderId === user?.id ? `bg-purple-500` : `bg-gray-200`
                   }  rounded-md p-2 `}
                 >
@@ -65,7 +65,7 @@ const Chat = () => {
                         : "text-gray-500"
                     }`}
                   >
-                    {moment(msg.createdAt).format("DD-MM-YY hh:mm A")}
+                    {moment(msg.createdAt).format("MMM DD, YY hh:mm A")}
                   </p>
                 </div>
               </div>
