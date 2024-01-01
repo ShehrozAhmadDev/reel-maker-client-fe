@@ -17,7 +17,7 @@ const AddProject = {
           title: title,
           link: link,
           description: description,
-          createdBy: createdBy
+          createdBy: createdBy,
         },
         {
           headers: {

@@ -1,5 +1,12 @@
 import Cookie from "js-cookie";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
+import {
+  IoChatbubbleEllipsesOutline,
+  IoCloudUploadOutline,
+} from "react-icons/io5";
+import { MdOutlineDashboardCustomize } from "react-icons/md";
+import { TbLogout2 } from "react-icons/tb";
 
 interface SidebarProps {
   selectedTab: string;
@@ -16,52 +23,63 @@ const Sidebar = ({ selectedTab, setSelectedTab }: SidebarProps) => {
   };
 
   return (
-    <div className="bg-gray-900 text-white h-screen w-1/4 p-6 text-lg">
-      <p
-        className="text-3xl font-bold mb-8 text-yellow-400 cursor-pointer"
-        onClick={() => router.push("/")}
-      >
-        Hexeel [LOGO]
-      </p>
+    <div className="bg-[#111114] text-white h-screen w-full p-6 text-lg">
       <div
-        className={`cursor-pointer mb-6 hover:text-yellow-400 ${
-          selectedTab === "dashboard" ? "text-yellow-400" : ""
+        onClick={() => router.push("/")}
+        className="w-fit flex items-center mb-12 text-white mr-6 space-x-2 cursor-pointer"
+      >
+        <Image
+          src={"/logo.png"}
+          alt="logo"
+          width={50}
+          height={50}
+          className="w-[40px] object-contain"
+        />
+        <p className="text-[#e61072] text-xl font-bold">Hexeel</p>
+      </div>
+      <div
+        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
+          selectedTab === "dashboard"
+            ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
+            : ""
         }`}
         onClick={() => setSelectedTab("dashboard")}
       >
-        Dashboard
+        <MdOutlineDashboardCustomize />
+        <p>Dashboard</p>
       </div>
       <div
-        className={`cursor-pointer mb-6 hover:text-yellow-400 ${
-          selectedTab === "chat" ? "text-yellow-400" : ""
+        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
+          selectedTab === "chat"
+            ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
+            : ""
         }`}
         onClick={() => setSelectedTab("chat")}
       >
-        Chat
+        <IoChatbubbleEllipsesOutline />
+        <p>Chat</p>
       </div>
       <div
-        className={`cursor-pointer mb-6 hover:text-yellow-400 ${
-          selectedTab === "video-upload" ? "text-yellow-400" : ""
+        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
+          selectedTab === "video-upload"
+            ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
+            : ""
         }`}
         onClick={() => setSelectedTab("video-upload")}
       >
-        Video Upload
+        <IoCloudUploadOutline />
+        <p>Video Upload</p>
       </div>
       <div
-        className={`cursor-pointer mb-6 hover:text-yellow-400 ${
-          selectedTab === "settings" ? "text-yellow-400" : ""
-        }`}
-        onClick={() => setSelectedTab("settings")}
-      >
-        Settings
-      </div>
-      <div
-        className={`cursor-pointer mb-6 hover:text-yellow-400 ${
-          selectedTab === "logout" ? "text-yellow-400" : ""
+        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
+          selectedTab === "logout"
+            ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
+            : ""
         }`}
         onClick={handleLogout}
       >
-        Logout
+        <TbLogout2 />
+        <p>Logout</p>
       </div>
     </div>
   );
