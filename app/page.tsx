@@ -6,12 +6,10 @@ import React from "react";
 
 const Home = () => {
   return (
-    <div className="max-w-[1460px] mx-auto">
-      <MainLayout>
-        <HeroSection />
-        <FeatureSection />
-      </MainLayout>
-    </div>
+    <MainLayout>
+      <HeroSection />
+      <FeatureSection />
+    </MainLayout>
   );
 };
 
