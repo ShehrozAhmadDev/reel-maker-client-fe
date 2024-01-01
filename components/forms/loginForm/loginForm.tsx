@@ -40,8 +40,8 @@ const LoginForm = () => {
 
   return (
     <div className="w-full flex justify-center items-center h-[calc(100vh-160px)] text-black ">
-      <div className="w-full max-w-md m-4 p-8 bg-white rounded-lg shadow-2xl">
-        <h2 className="text-3xl font-semibold mb-6 text-center  gradient-text">
+      <div className="w-full max-w-md m-4 p-8 bg-[#212121] rounded-lg shadow-2xl text-white">
+        <h2 className="text-3xl font-semibold mb-6 text-center gradient-text">
           Login
         </h2>
         <form onSubmit={handleLogin}>
@@ -51,7 +51,7 @@ const LoginForm = () => {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-md focus:outline-none bg-[#2f2f2f]"
               required
             />
           </div>
@@ -61,13 +61,13 @@ const LoginForm = () => {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-md focus:outline-none bg-[#2f2f2f]"
               required
             />
           </div>
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-md hover:opacity-80 transition-all duration-300"
+            className="w-full bg-gradient-to-r from-purple-600 to-pink-500 py-3 rounded-md hover:opacity-80 transition-all duration-300"
           >
             Login
           </button>

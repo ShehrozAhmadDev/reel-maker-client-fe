@@ -35,13 +35,13 @@ const Pricing = () => {
 
   return (
     <MainLayout>
-      <div className="bg-gradient-to-r from-purple-500 to-blue-500 text-black">
+      <div className="text-white bg-[#0d0d10]">
         <MainContainer>
           <div className="flex items-center justify-center py-20 h-[calc(100vh-160px)]">
             {plansData?.map((plan, index) => (
               <div
                 key={index}
-                className="bg-white h-[400px] w-[350px] rounded-lg p-6 scardShadow mx-4 flex flex-col justify-between"
+                className="bg-[#212121] h-[400px] w-[350px] rounded-lg p-6 scardShadow mx-4 flex flex-col justify-between"
               >
                 <span>
                   <h2 className="text-2xl font-bold mb-4 gradient-text text-center">

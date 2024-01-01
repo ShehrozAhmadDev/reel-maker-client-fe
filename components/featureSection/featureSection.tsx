@@ -4,11 +4,11 @@ import React from "react";
 
 const FeatureSection = () => {
   return (
-    <section className="w-full py-24 bg-gradient-to-r from-purple-500 to-blue-500 px-5">
+    <section className="w-full py-24 bg-[#212121] px-5">
       <MainContainer>
         <div className="container mx-auto text-center">
           <div className="max-w-[60%] mx-auto">
-            <h2 className="text-3xl font-bold mb-4 text-white">
+            <h2 className="text-3xl font-bold mb-4 gradient-text">
               The Easy Way to Upload and Edit Videos
             </h2>
             <p className="text-lg mb-8 text-gray-300">
@@ -19,7 +19,10 @@ const FeatureSection = () => {
           </div>
           <div className="grid mt-16 grid-cols-1 gap-8 md:grid-cols-3">
             {features?.map((feature, index) => (
-              <div key={index} className="bg-gray-100 p-6 rounded-md shadow-md">
+              <div
+                key={index}
+                className="bg-[#2f2f2f] p-6 rounded-md shadow-md"
+              >
                 <h3 className="text-2xl font-semibold mb-4 gradient-text text-start">
                   {feature.title}
                 </h3>

@@ -23,8 +23,8 @@ const SignupForm = ({
   const router = useRouter();
 
   return (
-    <div className="flex justify-center items-center h-[calc(100vh-160px)] text-black bg-gradient-to-r from-purple-600 to-pink-500">
-      <div className="w-full max-w-md m-4 p-8 bg-white rounded-lg shadow-2xl">
+    <div className="flex justify-center items-center h-[calc(100vh-160px)] text-black bg-[#0d0d10]">
+      <div className="w-full max-w-md m-4 p-8 bg-[#212121] rounded-lg shadow-2xl text-white">
         <h2 className="text-3xl font-semibold mb-6 text-center  gradient-text">
           SignUp
         </h2>
@@ -36,7 +36,7 @@ const SignupForm = ({
               placeholder="Full Name"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-md focus:outline-none bg-[#2f2f2f]"
               required
             />
           </div>
@@ -46,7 +46,7 @@ const SignupForm = ({
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-md focus:outline-none bg-[#2f2f2f]"
               required
             />
           </div>
@@ -56,43 +56,10 @@ const SignupForm = ({
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
+              className="w-full px-4 py-3 rounded-md focus:outline-none bg-[#2f2f2f]"
               required
             />
           </div>
-          {/* <div className="mb-6">
-            <label className="block mb-2 font-semibold">Select a Plan:</label>
-            <select
-              className="w-full px-4 py-3 border rounded-md focus:outline-none focus:border-blue-500"
-              value={selectedPlan}
-              onChange={(e) => setSelectedPlan(e.target.value)}
-              required
-            >
-              <option value="">Select a Plan</option>
-
-              <option value="basic">Basic Plan - $200 per month</option>
-              <option value="standard">Standard Plan - $500 per month</option>
-              <option value="premium">Premium Plan - $3000 per month</option>
-            </select>
-          </div> */}
-          {/* <div className="mb-6">
-            <CardElement
-              options={{
-                style: {
-                  base: {
-                    fontSize: "16px",
-                    color: "#424770",
-                    "::placeholder": {
-                      color: "#aab7c4",
-                    },
-                  },
-                  invalid: {
-                    color: "#9e2146",
-                  },
-                },
-              }}
-            />
-          </div> */}
           <button
             type="submit"
             className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-md hover:opacity-80 transition-all duration-300"

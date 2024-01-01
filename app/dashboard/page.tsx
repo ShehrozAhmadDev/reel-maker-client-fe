@@ -1,7 +1,6 @@
 "use client";
 import Chat from "@/components/sections/chat/chat";
 import DashboardContent from "@/components/sections/dashboard/dashboard";
-import SettingsComponent from "@/components/sections/settings/settings";
 import VideoForm from "@/components/sections/videoUpload/videoUpload";
 import Sidebar from "@/components/sidebar/sidebar";
 import { useState } from "react";
@@ -10,13 +9,14 @@ const Dashboard = () => {
   const [selectedTab, setSelectedTab] = useState("dashboard");
 
   return (
-    <div className="flex bg-gradient-to-r from-purple-500 to-blue-500 text-black/[.80]">
-      <Sidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
-      <div className="w-3/4 p-6">
+    <div className="flex bg-[#0d0d10] text-black/[.80]">
+      <div className="w-[20%]">
+        <Sidebar selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
+      </div>
+      <div className="w-[80%] p-6">
         {selectedTab === "dashboard" && <DashboardContent />}
         {selectedTab === "chat" && <Chat />}
         {selectedTab === "video-upload" && <VideoForm />}
-        {selectedTab === "settings" && <SettingsComponent />}
       </div>
     </div>
   );

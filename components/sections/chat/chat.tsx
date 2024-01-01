@@ -75,7 +75,7 @@ const Chat = () => {
         <div className="p-4">
           <div
             tabIndex={0}
-            className="flex items-center bg-white/[.60] rounded-lg p-1"
+            className="flex items-center bg-[#2f2f2f] rounded-lg p-1"
           >
             <InputEmoji
               value={message}
@@ -98,7 +98,7 @@ const Chat = () => {
             </label>
             <button
               onClick={handleSendClick}
-              className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+              className="bg-purple-500 text-white px-4 py-2 rounded-md hover:opacity-70 transition duration-300"
             >
               Send
             </button>

@@ -4,10 +4,10 @@ import React from "react";
 
 const HeroSection = () => {
   return (
-    <div className="flex flex-col items-center px-5 h-screen justify-center bg-gradient-to-r from-purple-600 to-pink-500">
+    <div className="flex flex-col items-center px-5 h-screen justify-center bg-[#0d0d10] to-pink-500">
       <MainContainer>
         <span className="w-[40%] space-y-5 text-center text-white">
-          <h1 className=" text-3xl font-bold">
+          <h1 className="text-3xl font-bold gradient-text">
             Unlock Your Video Editing Potential with Hexeel Master
           </h1>
           <p>

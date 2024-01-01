@@ -8,7 +8,7 @@ interface GradientTextProps {
 
 const MainLayout = ({ children }: GradientTextProps) => {
   return (
-    <div className="bg-gradient-to-r from-purple-600 to-pink-500 text-transparent bg-clip-text">
+    <div className="text-transparent bg-clip-text">
       <Navbar />
       {children}
       <Footer />

@@ -1,4 +1,5 @@
 import MainContainer from "@/providers/mainContainer/mainContainer";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
 
@@ -8,10 +9,18 @@ const Navbar = () => {
     <nav className=" bg-gradient-to-r from-blue-500 to-purple-600 p-6">
       <MainContainer>
         <div className="flex items-center justify-between flex-wrap">
-          <div className="flex items-center text-white mr-6 space-x-20">
-            <span className="font-semibold text-xl tracking-tight">
-              Hexeel Logo
-            </span>
+          <div
+            onClick={() => router.push("/")}
+            className="flex items-center text-white mr-6 space-x-2 cursor-pointer"
+          >
+            <Image
+              src={"/logo.png"}
+              alt="logo"
+              width={50}
+              height={50}
+              className="w-[40px] object-contain"
+            />
+            <p className="text-[#e61072] text-xl font-bold">Hexeel</p>
           </div>
           <span className="flex space-x-8 text-lg font-bold text-white">
             <p
