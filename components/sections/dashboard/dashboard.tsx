@@ -7,7 +7,9 @@ const DashboardContent = () => {
 
   return (
     <div className="py-12 px-6 text-white">
-      <h2 className="text-4xl font-bold mb-8 ">Dashboard</h2>
+      <h2 className="text-2xl font-bold mb-8 gradient-text">
+        Welcome {user?.fullName}!
+      </h2>
       <div className="grid grid-cols-2 gap-6">
         <div className="bg-[#212121] p-8 rounded-2xl ">
           <p className="text-xl font-semibold mb-4">Name</p>

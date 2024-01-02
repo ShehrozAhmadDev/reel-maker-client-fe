@@ -3,12 +3,6 @@ import AddProject from "@/services/addProject";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
-import {
-  EditorState,
-  RawDraftContentState,
-  convertFromRaw,
-  convertToRaw,
-} from "draft-js";
 import dynamic from "next/dynamic";
 
 const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
@@ -20,25 +14,12 @@ const VideoForm = () => {
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
-  const [descriptionContent, setDescriptionContent] =
-    useState<RawDraftContentState>(
-      convertToRaw(EditorState.createEmpty().getCurrentContent())
-    );
-  const [editorState, setEditorState] = useState(EditorState.createEmpty());
-
-  // to convert description into string
-  const getDescriptionText = (content: RawDraftContentState): string => {
-    const contentState = convertFromRaw(content);
-    const editorState = EditorState.createWithContent(contentState);
-    const rawText = editorState.getCurrentContent().getPlainText();
-    return rawText;
-  };
+  const [descriptionContent, setDescriptionContent] = useState("");
+  const [editorHtml, setEditorHtml] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = Cookie.get("token");
-    const descriptionText = getDescriptionText(descriptionContent);
-    console.log({ descriptionText });
 
     try {
       if (title && link && descriptionContent) {
@@ -46,15 +27,13 @@ const VideoForm = () => {
           token,
           title,
           link,
-          descriptionText,
+          descriptionContent,
           user?.id
         );
         setTitle("");
         setLink("");
-        setEditorState(EditorState.createEmpty());
-        setDescriptionContent(
-          convertToRaw(EditorState.createEmpty().getCurrentContent())
-        );
+        setDescriptionContent("");
+        setEditorHtml("");
         toast.success("Project has been added");
       } else {
         toast.error("Fields can't be empty");
@@ -99,10 +78,10 @@ const VideoForm = () => {
           <label htmlFor="description" className="block text-white mb-1">
             Description:
           </label>
-          <div className="border-2 border-gray-300 rounded-md">
+          <div className="  rounded-md">
             <CustomTextEditor
-              editorState={editorState}
-              setEditorState={setEditorState}
+              editorHtml={editorHtml}
+              setEditorHtml={setEditorHtml}
               setDescriptionContent={setDescriptionContent}
             />
           </div>
