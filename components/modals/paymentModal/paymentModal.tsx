@@ -1,11 +1,19 @@
+"use client";
 import { Elements } from "@stripe/react-stripe-js";
 import { loadStripe } from "@stripe/stripe-js";
-import React, { useState } from "react";
-import { CardElement } from "@stripe/react-stripe-js";
+import React, { useEffect, useState } from "react";
 import Modal from "react-modal";
 import { PlanDataType } from "@/types/type";
+import { useAppSelector } from "@/redux/store";
+import Cookie from "js-cookie";
+import UserPlans from "@/services/userPlan";
+import SubscriptionForm from "@/components/stripe/subscriptionForm/SubscriptionForm";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/user-slice";
 
-const stripePromise = loadStripe("YOUR_STRIPE_PUBLIC_KEY");
+const stripePromise = loadStripe(
+  process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY || ""
+);
 
 export interface PaymentModalProps {
   isOpen: boolean;
@@ -18,8 +26,77 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
   closeModal,
   selectedPlan,
 }) => {
-  const [cardholderName, setCardholderName] = useState<string>("");
+  const { user } = useAppSelector((state) => state.userReducer.value);
+  const [clientSecret, setClientSecret] = useState<string>("");
+  const dispatch = useDispatch();
+  const options = {
+    clientSecret,
+  };
 
+  const createCustomer = async () => {
+    try {
+      const token = Cookie.get("token");
+      if (user && !user.stripeId && !user.subscriptionId) {
+        const customerData = await UserPlans.createCustomer(
+          user?.email,
+          user?.fullName,
+          token
+        );
+        dispatch(
+          setUser({
+            ...user,
+            stripeId: customerData.customer,
+          })
+        );
+        if (customerData.customer && selectedPlan) {
+          const subscription = await UserPlans.createSubscription(
+            customerData.customer,
+            selectedPlan?.priceId,
+            token
+          );
+          dispatch(
+            setUser({
+              ...user,
+              stripeId: customerData.customer,
+              subscriptionId: subscription.subscriptionId,
+            })
+          );
+          setClientSecret(subscription.clientSecret);
+        }
+      } else if (user?.stripeId && user?.subscriptionId && selectedPlan) {
+        const subscription = await UserPlans.updateSubscription(
+          user?.subscriptionId,
+          selectedPlan?.priceId,
+          token
+        );
+
+        setClientSecret(subscription.clientSecret);
+      } else {
+        if (user?.stripeId && selectedPlan) {
+          const subscription = await UserPlans.createSubscription(
+            user.stripeId,
+            selectedPlan?.priceId,
+            token
+          );
+          dispatch(
+            setUser({
+              ...user,
+              subscriptionId: subscription.subscriptionId,
+            })
+          );
+          setClientSecret(subscription.clientSecret);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    if (user && selectedPlan) {
+      createCustomer();
+    }
+  }, [selectedPlan]);
   return (
     <Modal
       isOpen={isOpen}
@@ -27,53 +104,19 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       contentLabel="Stripe Payment Modal"
       className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-[#2f2f2f] p-10 rounded-lg shadow-lg"
       overlayClassName="fixed inset-0 bg-black bg-opacity-25 backdrop-filter backdrop-blur-sm flex justify-center items-center"
+      ariaHideApp={false}
     >
       {selectedPlan && (
-        <Elements stripe={stripePromise}>
-          <div className="w-[500px] text-white focus:outline-none">
-            <span className="flex space-x-5 justify-between  mb-8">
-              <h2 className="text-xl text-center w-[50%] font-semibold p-4 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg">
-                {selectedPlan.title}
-              </h2>
-              <p className="text-2xl text-center w-[50%] font-semibold p-4 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg">
-                ${selectedPlan.price}
-              </p>
-            </span>
-            <form>
-              <input
-                required
-                type="text"
-                placeholder="Cardholder's Name"
-                className="w-full p-1.5 mb-4 bg-[#212121] rounded-md  focus:outline-none"
-                value={cardholderName}
-                onChange={(e) => setCardholderName(e.target.value)}
+        <>
+          {clientSecret && (
+            <Elements options={options} stripe={stripePromise}>
+              <SubscriptionForm
+                selectedPlan={selectedPlan}
+                closeModal={closeModal}
               />
-              <CardElement
-                options={{
-                  style: {
-                    base: {
-                      fontSize: "16px",
-                      color: "white",
-                      "::placeholder": {
-                        color: "#aab7c4",
-                      },
-                    },
-                    invalid: {
-                      color: "#9e2146",
-                    },
-                  },
-                }}
-                className="w-full p-2 bg-[#212121] text-white rounded-md focus:outline-none"
-              />
-              <button
-                type="submit"
-                className="w-full mt-8 bg-gradient-to-r from-purple-600 to-pink-500 text-white py-3 rounded-md hover:opacity-80 transition-all duration-300"
-              >
-                Continue Payment
-              </button>
-            </form>
-          </div>
-        </Elements>
+            </Elements>
+          )}
+        </>
       )}
     </Modal>
   );

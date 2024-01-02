@@ -5,15 +5,18 @@ export interface IMessage {
 }
 
 export interface PlanDataType {
-  createdAt: string;
-  description: string;
-  duration: number;
+  priceId: string;
+  productId: string;
   features: string[];
-  length: number;
-  noOfVideos: number;
   price: number;
   title: string;
-  updatedAt: string;
-  __v: number;
-  _id: string;
+}
+
+export interface SubscriptionType {
+  subId: string,
+  startDate: number,
+  endDate: number,
+  customerId: string,
+  productId: string,
+  priceId: string
 }

@@ -2,22 +2,33 @@
 import PaymentModal from "@/components/modals/paymentModal/paymentModal";
 import MainContainer from "@/providers/mainContainer/mainContainer";
 import MainLayout from "@/providers/mainLayout/mainLayout";
+import { useAppSelector } from "@/redux/store";
 import Plans from "@/services/plan";
-import { PlanDataType } from "@/types/type";
+import UserPlans from "@/services/userPlan";
+import { PlanDataType, SubscriptionType } from "@/types/type";
+import { useRouter } from "next/navigation";
+import Cookie from "js-cookie";
 
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/user-slice";
 
 const Pricing = () => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [plansData, setPlansData] = useState<PlanDataType[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<PlanDataType | null>(null);
-  const [showModal, setShowModal] = useState(false);
+  const [userSubscriptions, setUserSubscriptions] =
+    useState<SubscriptionType | null>(null);
 
+  const [showModal, setShowModal] = useState(false);
+  const { user } = useAppSelector((state) => state.userReducer.value);
   const getAllPlans = () => {
     Plans.getPlans()
       .then((data) => {
-        if (data?.status === 200) {
-          setPlansData(data.data);
-        }
+        console.log(data);
+        setPlansData(data.products);
       })
       .catch((err) => {
         console.log(err);
@@ -25,12 +36,56 @@ const Pricing = () => {
       .finally(() => {});
   };
   const handleSelectPlan = (plan: PlanDataType) => {
-    setSelectedPlan(plan);
-    setShowModal(true);
+    if (userSubscriptions) {
+      toast.error("Please cancel your previous subscription");
+      return;
+    }
+    if (!user) {
+      router.push("/login");
+    } else {
+      setSelectedPlan(plan);
+      setShowModal(true);
+    }
+  };
+
+  const handleCancelPlan = async () => {
+    try {
+      if (user?.subscriptionId) {
+        const token = Cookie?.get("token");
+        const data = await UserPlans.cancelSubscription(
+          user?.subscriptionId,
+          token
+        );
+        if (data.status === 200) {
+          toast.success("Plan cancelled successfully");
+          setUserSubscriptions(null);
+          dispatch(setUser({ ...user, subscriptionId: "" }));
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Error occured");
+    }
+  };
+
+  const getUserSubscription = async () => {
+    try {
+      if (user?.stripeId) {
+        const token = Cookie?.get("token");
+        const subscriptions = await UserPlans.getSubscriptions(
+          user.stripeId,
+          token
+        );
+        if (subscriptions) setUserSubscriptions(subscriptions[0]);
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
     getAllPlans();
+    getUserSubscription();
   }, []);
 
   return (
@@ -53,19 +108,40 @@ const Pricing = () => {
 
                   <div className="list-disc pl-5 mb-8 mt-6">
                     {plan.features.map((feature, idx) => (
-                      <span className="flex space-x-2">
+                      <span className="flex space-x-2" key={idx}>
                         <p className="bg-gradient-to-r from-purple-600 to-pink-500 w-2 h-2 rounded-full mt-1.5"></p>
                         <p key={idx}>{feature}</p>
                       </span>
                     ))}
                   </div>
                 </span>
-                <button
-                  onClick={() => handleSelectPlan(plan)}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-all duration-300"
-                >
-                  Select Plan
-                </button>
+
+                {userSubscriptions?.productId === plan.productId ? (
+                  <>
+                    {user?.subscriptionId ? (
+                      <button
+                        onClick={() => handleCancelPlan()}
+                        className="w-full border-[1px] border-600 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-all duration-300"
+                      >
+                        Cancel Plan
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleSelectPlan(plan)}
+                        className="w-full b bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-all duration-300"
+                      >
+                        Select Plan
+                      </button>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    onClick={() => handleSelectPlan(plan)}
+                    className="w-full b bg-gradient-to-r from-purple-600 to-pink-500 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-all duration-300"
+                  >
+                    Select Plan
+                  </button>
+                )}
               </div>
             ))}
           </div>
