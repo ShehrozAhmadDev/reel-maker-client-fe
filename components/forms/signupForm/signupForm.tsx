@@ -67,9 +67,12 @@ const SignupForm = ({
             Sign Up
           </button>
         </form>
-        <span className="w-full flex justify-end">
+        <span className="w-full flex justify-end items-center mt-5 space-x-2">
+          <p className="text-sm text-white/[.60]">
+            You already have an account?
+          </p>
           <p
-            className="underline w-fit font-bold cursor-pointer text-purple-500 mt-2  hover:opacity-85 "
+            className="underline w-fit font-bold cursor-pointer text-purple-500 hover:opacity-85 "
             onClick={() => router.push("/login")}
           >
             Login

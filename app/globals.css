@@ -34,4 +34,25 @@ body {
   -webkit-text-fill-color: transparent;
 }
 
+.quill.ql-border {
+  .ql-toolbar {
+    border-top: 1px solid #2f2f2f;
+    border-left: 1px solid #2f2f2f;
+    border-right: 1px solid #2f2f2f;
+    border-bottom: 1px solid #2f2f2f;
+    background-color: #212121;
+  
+  }
+  .ql-container {
+    border-left: 1px solid #2f2f2f;
+    border-right: 1px solid #2f2f2f;
+    border-bottom: 1px solid #2f2f2f;
+    color: white;
+  }
+ 
 
+}
+.quill > .ql-container > .ql-editor.ql-blank::before{
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+}

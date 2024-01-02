@@ -68,7 +68,7 @@ const Navbar = () => {
             <div className="flex space-x-8 items-center">
               <p className="text-lg font-bold text-white">{user?.email}</p>
               <button
-                onClick={() => router.push("/dashboard")}
+                onClick={() => router.push("/user/dashboard")}
                 className="bg-white text-pink-500 px-4 py-2 rounded-lg mr-4 hover:bg-pink-500 hover:text-white transition-all duration-300"
               >
                 Dashboard

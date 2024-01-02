@@ -1,32 +1,66 @@
 import React from "react";
-import { EditorState, RawDraftContentState, convertToRaw } from "draft-js";
-import { Editor } from "react-draft-wysiwyg";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
-interface CustomTextEditorProps {
-  editorState: EditorState;
-  setEditorState: (index: EditorState) => void;
-  setDescriptionContent: (index: RawDraftContentState) => void;
+interface RichTextEditorProps {
+  editorHtml: string;
+  setEditorHtml: (index: string) => void;
+  setDescriptionContent: (index: string) => void;
 }
 
 const CustomTextEditor = ({
-  editorState,
-  setEditorState,
+  editorHtml,
+  setEditorHtml,
   setDescriptionContent,
-}: CustomTextEditorProps) => {
-  const handleEditorChange = (state: EditorState) => {
-    setEditorState(state);
-    setDescriptionContent(convertToRaw(state.getCurrentContent()));
+}: RichTextEditorProps) => {
+  const modules = {
+    toolbar: [
+      [{ header: "1" }, { header: "2" }, { font: [] }],
+      [{ size: [] }],
+      ["bold", "italic", "underline", "strike", "blockquote"],
+      [
+        { list: "ordered" },
+        { list: "bullet" },
+        { indent: "-1" },
+        { indent: "+1" },
+      ],
+      ["link", "image", "video"],
+      ["clean"],
+    ],
+  };
+
+  const formats = [
+    "header",
+    "font",
+    "size",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "link",
+    "image",
+    "video",
+  ];
+
+  const handleChange = (content: string) => {
+    setEditorHtml(content);
+    setDescriptionContent && setDescriptionContent(content);
   };
 
   return (
-    <div className="text-white max-h-[calc(100vh-340px)] overflow-y-auto">
-      <Editor
-        editorState={editorState}
-        onEditorStateChange={handleEditorChange}
-        toolbarClassName="toolbarClassName"
-        wrapperClassName="wrapperClassName"
-        editorClassName="editorClassName"
+    <div className="text-white max-h-[calc(100vh-420px)] overflow-y-auto ">
+      <ReactQuill
+        theme="snow"
+        className={"ql-border placeholder:text-white"}
+        modules={modules}
+        formats={formats}
+        value={editorHtml}
+        onChange={handleChange}
+        placeholder="Type Here..."
       />
     </div>
   );
