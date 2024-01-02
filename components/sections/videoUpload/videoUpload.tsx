@@ -3,13 +3,17 @@ import AddProject from "@/services/addProject";
 import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
-import CustomTextEditor from "./CustomTextEditor";
 import {
   EditorState,
   RawDraftContentState,
   convertFromRaw,
   convertToRaw,
 } from "draft-js";
+import dynamic from "next/dynamic";
+
+const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
+  ssr: false,
+});
 
 const VideoForm = () => {
   const { user } = useAppSelector((state) => state.userReducer.value);
