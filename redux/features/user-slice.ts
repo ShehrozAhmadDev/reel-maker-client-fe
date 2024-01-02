@@ -8,6 +8,8 @@ interface userI {
   id: string;
   fullName: string;
   email: string;
+  stripeId?: string;
+  subscriptionId?: string;
 }
 
 interface userState {

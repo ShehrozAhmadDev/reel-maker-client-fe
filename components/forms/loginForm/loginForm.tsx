@@ -25,6 +25,8 @@ const LoginForm = () => {
               id: data._id,
               fullName: data?.fullName,
               email: data?.email,
+              stripeId: data?.stripeId,
+              subscriptionId: data?.subscriptionId,
             })
           );
           toast.success("Logged In...");
