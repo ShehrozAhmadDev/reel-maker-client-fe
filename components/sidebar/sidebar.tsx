@@ -1,6 +1,7 @@
+"use client";
 import Cookie from "js-cookie";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import {
   IoChatbubbleEllipsesOutline,
   IoCloudUploadOutline,
@@ -8,13 +9,9 @@ import {
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
 
-interface SidebarProps {
-  selectedTab: string;
-  setSelectedTab: (index: string) => void;
-}
-
-const Sidebar = ({ selectedTab, setSelectedTab }: SidebarProps) => {
+const Sidebar = () => {
   const router = useRouter();
+  const param = usePathname();
 
   const handleLogout = () => {
     Cookie.remove("token");
@@ -39,43 +36,45 @@ const Sidebar = ({ selectedTab, setSelectedTab }: SidebarProps) => {
       </div>
       <div
         className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
-          selectedTab === "dashboard"
+          param === "/user/dashboard"
             ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
             : ""
         }`}
-        onClick={() => setSelectedTab("dashboard")}
+        onClick={() => {
+          router.push("/user/dashboard");
+        }}
       >
         <MdOutlineDashboardCustomize />
         <p>Dashboard</p>
       </div>
       <div
         className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
-          selectedTab === "chat"
+          param === "/user/chat"
             ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
             : ""
         }`}
-        onClick={() => setSelectedTab("chat")}
+        onClick={() => {
+          router.push("/user/chat");
+        }}
       >
         <IoChatbubbleEllipsesOutline />
         <p>Chat</p>
       </div>
       <div
         className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
-          selectedTab === "video-upload"
+          param === "/user/video-upload"
             ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
             : ""
         }`}
-        onClick={() => setSelectedTab("video-upload")}
+        onClick={() => {
+          router.push("/user/video-upload");
+        }}
       >
         <IoCloudUploadOutline />
         <p>Video Upload</p>
       </div>
       <div
-        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 ${
-          selectedTab === "logout"
-            ? "text-white bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg"
-            : ""
-        }`}
+        className={`flex space-x-2 items-center cursor-pointer mb-6 hover:opacity-70 transition-all duration-300 p-2 `}
         onClick={handleLogout}
       >
         <TbLogout2 />

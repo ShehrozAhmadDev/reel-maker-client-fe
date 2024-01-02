@@ -1,9 +1,10 @@
+"use client";
 import Image from "next/image";
 import InputEmoji from "react-input-emoji";
 import moment from "moment";
 import useChat from "@/hooks/chat/useChat";
 
-const Chat = () => {
+const ChatSection = () => {
   const {
     loading,
     message,
@@ -22,7 +23,7 @@ const Chat = () => {
         {loading ? (
           <p className="text-white font-bold my-2 p-4">Loading....</p>
         ) : messages.length === 0 ? (
-          <p className="text-white font-bold my-2 p-4">No chat to show</p>
+          <p className="text-white font-bold my-2 p-4">No chats to show</p>
         ) : (
           <div className="h-[calc(100vh-190px)] overflow-y-auto p-4 ">
             {messages?.map((msg, index) => (
@@ -109,4 +110,4 @@ const Chat = () => {
   );
 };
 
-export default Chat;
+export default ChatSection;
