@@ -22,11 +22,11 @@ const LoginForm = () => {
           Cookie.set("role", data?.role);
           dispatch(
             setUser({
-              id: data._id,
-              fullName: data?.fullName,
-              email: data?.email,
-              stripeId: data?.stripeId,
-              subscriptionId: data?.subscriptionId,
+              id: data?.user?._id,
+              fullName: data?.user?.fullName,
+              email: data?.user?.email,
+              stripeId: data?.user?.stripeId,
+              subscriptionId: data?.user?.subscriptionId,
             })
           );
           toast.success("Logged In...");

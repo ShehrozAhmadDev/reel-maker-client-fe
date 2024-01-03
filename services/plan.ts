@@ -4,7 +4,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL;
 const Plans = {
   getPlans: async () => {
     return axios
-      .get(`${baseUrl}/userplan/getplans`)
+      .get(`${baseUrl}/subscription/getplans`)
       .then((res) => res.data)
       .catch((error) => console.error(error));
   },

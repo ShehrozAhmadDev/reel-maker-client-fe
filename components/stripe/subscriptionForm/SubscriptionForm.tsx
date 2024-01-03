@@ -1,3 +1,5 @@
+import { useAppSelector } from "@/redux/store";
+import Subscriptions from "@/services/subscription";
 import { PlanDataType } from "@/types/type";
 import {
   LinkAuthenticationElement,
@@ -7,20 +9,48 @@ import {
 } from "@stripe/react-stripe-js";
 import React, { FC, useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import Cookie from "js-cookie";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/user-slice";
 
 interface ISubscriptionFormTypes {
   selectedPlan: PlanDataType | null;
   closeModal: () => void;
+  getUserSubscription: () => void;
 }
 
 const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
   selectedPlan,
   closeModal,
+  getUserSubscription,
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const stripe = useStripe();
   const elements = useElements();
+  const { user } = useAppSelector((state) => state.userReducer.value);
+  const dispatch = useDispatch();
+
+  const verifyPayment = async () => {
+    const token = Cookie.get("token");
+
+    if (user?.subscriptionId)
+      await Subscriptions.verifySubscription(user?.subscriptionId._id, token)
+        .then(async (data) => {
+          await getUserSubscription();
+
+          dispatch(
+            setUser({
+              ...user,
+              subscriptionId: data.subscription,
+            })
+          );
+        })
+        .catch((error) => {
+          toast.error(error.message);
+          console.log(error);
+        });
+  };
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -41,7 +71,7 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
       case "succeeded":
         toast.success("Payment Succeeded!");
         setMessage("Payment succeeded!");
-
+        verifyPayment();
         break;
       case "processing":
         toast.info("Your payment is processing!");
@@ -72,6 +102,8 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
   };
 
   useEffect(() => {
+    verifyPayment();
+
     if (!stripe) {
       return;
     }
@@ -79,14 +111,11 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
     const clientSecret = new URLSearchParams(window.location.search).get(
       "payment_intent_client_secret"
     );
-    console.log(clientSecret);
 
     if (!clientSecret) {
       return;
     }
-    console.log("I am here");
     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      console.log("Payment Intent", paymentIntent);
       switch (paymentIntent?.status) {
         case "succeeded":
           toast.success("Payment Succeeded!");
@@ -115,7 +144,7 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
           {selectedPlan && selectedPlan.title}
         </h2>
         <p className="text-2xl text-center w-[50%] font-semibold p-4 bg-gradient-to-r from-purple-600 to-pink-500 rounded-lg">
-          ${selectedPlan && selectedPlan.price}
+          ${selectedPlan && (selectedPlan.price / 100).toFixed(2)}
         </p>
       </span>
       <form id="payment-form" onSubmit={handleSubmit}>
@@ -127,7 +156,7 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
           // }}
           //
           // Prefill the email field like so:
-          // options={{defaultValues: {email: 'foo@bar.com'}}}
+          options={{ defaultValues: { email: user?.email || "" } }}
         />
         <PaymentElement id="payment-element" />
         <button

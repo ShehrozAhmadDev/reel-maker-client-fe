@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 
 const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
   ssr: false,
@@ -11,6 +12,7 @@ const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
 
 const VideoForm = () => {
   const { user } = useAppSelector((state) => state.userReducer.value);
+  const router = useRouter();
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
@@ -20,27 +22,35 @@ const VideoForm = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const token = Cookie.get("token");
-
-    try {
-      if (title && link && descriptionContent) {
-        await AddProject.postAddProject(
-          token,
-          title,
-          link,
-          descriptionContent,
-          user?.id
-        );
-        setTitle("");
-        setLink("");
-        setDescriptionContent("");
-        setEditorHtml("");
-        toast.success("Project has been added");
-      } else {
-        toast.error("Fields can't be empty");
+    if (user?.subscriptionId) {
+      try {
+        if (title && link && descriptionContent) {
+          await AddProject.postAddProject(
+            token,
+            title,
+            link,
+            descriptionContent,
+            user?.id
+          );
+          setTitle("");
+          setLink("");
+          setDescriptionContent("");
+          setEditorHtml("");
+          toast.success("Project has been added");
+        } else {
+          toast.error("Fields can't be empty");
+        }
+      } catch (error) {
+        toast.error("Project can't be added");
+        console.error("Error:", error);
       }
-    } catch (error) {
-      toast.error("Project can't be added");
-      console.error("Error:", error);
+    } else {
+      toast.error(
+        "Please get subscribe first to upload a video... Redirecting to pricing page"
+      );
+      setTimeout(() => {
+        router.push("/pricing");
+      }, 3000);
     }
   };
 

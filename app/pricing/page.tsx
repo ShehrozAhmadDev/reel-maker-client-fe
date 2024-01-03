@@ -4,7 +4,7 @@ import MainContainer from "@/providers/mainContainer/mainContainer";
 import MainLayout from "@/providers/mainLayout/mainLayout";
 import { useAppSelector } from "@/redux/store";
 import Plans from "@/services/plan";
-import UserPlans from "@/services/userPlan";
+import Subscriptions from "@/services/subscription";
 import { PlanDataType, SubscriptionType } from "@/types/type";
 import { useRouter } from "next/navigation";
 import Cookie from "js-cookie";
@@ -27,7 +27,6 @@ const Pricing = () => {
   const getAllPlans = () => {
     Plans.getPlans()
       .then((data) => {
-        console.log(data);
         setPlansData(data.products);
       })
       .catch((err) => {
@@ -52,14 +51,13 @@ const Pricing = () => {
     try {
       if (user?.subscriptionId) {
         const token = Cookie?.get("token");
-        const data = await UserPlans.cancelSubscription(
-          user?.subscriptionId,
+        const data = await Subscriptions.cancelSubscription(
+          user?.subscriptionId?.subscriptionId,
           token
         );
         if (data.status === 200) {
           toast.success("Plan cancelled successfully");
-          setUserSubscriptions(null);
-          dispatch(setUser({ ...user, subscriptionId: "" }));
+          dispatch(setUser({ ...user, subscriptionId: null }));
         }
       }
     } catch (error) {
@@ -72,11 +70,14 @@ const Pricing = () => {
     try {
       if (user?.stripeId) {
         const token = Cookie?.get("token");
-        const subscriptions = await UserPlans.getSubscriptions(
+        console.log(user.stripeId);
+        const subscriptions = await Subscriptions.getSubscriptions(
           user.stripeId,
           token
         );
-        if (subscriptions) setUserSubscriptions(subscriptions[0]);
+        console.log({ subscriptions });
+        if (subscriptions)
+          setUserSubscriptions(subscriptions?.subscriptions?.[0]);
       }
     } catch (error) {
       console.error(error);
@@ -87,6 +88,8 @@ const Pricing = () => {
     getAllPlans();
     getUserSubscription();
   }, []);
+
+  console.log({ user, userSubscriptions });
 
   return (
     <MainLayout>
@@ -103,7 +106,7 @@ const Pricing = () => {
                     {plan.title}
                   </h2>
                   <p className="text-4xl font-semibold mb-4 text-center">
-                    ${plan.price}
+                    ${(plan.price / 100).toFixed(2)}
                   </p>
 
                   <div className="list-disc pl-5 mb-8 mt-6">
@@ -118,7 +121,8 @@ const Pricing = () => {
 
                 {userSubscriptions?.productId === plan.productId ? (
                   <>
-                    {user?.subscriptionId ? (
+                    {user?.subscriptionId?.subscriptionId &&
+                    user?.subscriptionId?.paymentStatus === "approved" ? (
                       <button
                         onClick={() => handleCancelPlan()}
                         className="w-full border-[1px] border-600 text-white px-4 py-2 rounded-lg hover:opacity-80 transition-all duration-300"
@@ -152,6 +156,7 @@ const Pricing = () => {
           isOpen={showModal}
           closeModal={() => setShowModal(false)}
           selectedPlan={selectedPlan}
+          getUserSubscription={getUserSubscription}
         />
       </div>
     </MainLayout>

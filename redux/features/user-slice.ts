@@ -4,12 +4,26 @@ interface InitialState {
   value: userState;
 }
 
+interface ISubscription {
+  _id: string;
+  subscriptionId: string;
+  planId: string;
+  priceId: string;
+  userId: string;
+  status: string;
+  noOfVideosRemaining: number;
+  paymentStatus: string;
+  expiryDate: Date | string;
+  createdAt: Date | string;
+  updatedAt: Date | string;
+}
+
 interface userI {
   id: string;
   fullName: string;
   email: string;
   stripeId?: string;
-  subscriptionId?: string;
+  subscriptionId?: ISubscription | null;
 }
 
 interface userState {
