@@ -6,7 +6,7 @@ import Modal from "react-modal";
 import { PlanDataType } from "@/types/type";
 import { useAppSelector } from "@/redux/store";
 import Cookie from "js-cookie";
-import UserPlans from "@/services/userPlan";
+import Subscriptions from "@/services/subscription";
 import SubscriptionForm from "@/components/stripe/subscriptionForm/SubscriptionForm";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user-slice";
@@ -17,14 +17,16 @@ const stripePromise = loadStripe(
 
 export interface PaymentModalProps {
   isOpen: boolean;
-  closeModal: () => void;
   selectedPlan: PlanDataType | null;
+  closeModal: () => void;
+  getUserSubscription: () => void;
 }
 
 const PaymentModal: React.FC<PaymentModalProps> = ({
   isOpen,
   closeModal,
   selectedPlan,
+  getUserSubscription,
 }) => {
   const { user } = useAppSelector((state) => state.userReducer.value);
   const [clientSecret, setClientSecret] = useState<string>("");
@@ -37,11 +39,12 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
     try {
       const token = Cookie.get("token");
       if (user && !user.stripeId && !user.subscriptionId) {
-        const customerData = await UserPlans.createCustomer(
+        const customerData = await Subscriptions.createCustomer(
           user?.email,
           user?.fullName,
           token
         );
+        console.log({ customerData });
         dispatch(
           setUser({
             ...user,
@@ -49,23 +52,25 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
           })
         );
         if (customerData.customer && selectedPlan) {
-          const subscription = await UserPlans.createSubscription(
+          const subscription = await Subscriptions.createSubscription(
             customerData.customer,
             selectedPlan?.priceId,
             token
           );
-          dispatch(
-            setUser({
-              ...user,
-              stripeId: customerData.customer,
-              subscriptionId: subscription.subscriptionId,
-            })
-          );
-          setClientSecret(subscription.clientSecret);
+          if (subscription.status === 200) {
+            dispatch(
+              setUser({
+                ...user,
+                stripeId: customerData.customer,
+                subscriptionId: subscription.user.subscriptionId,
+              })
+            );
+            setClientSecret(subscription.clientSecret);
+          }
         }
       } else if (user?.stripeId && user?.subscriptionId && selectedPlan) {
-        const subscription = await UserPlans.updateSubscription(
-          user?.subscriptionId,
+        const subscription = await Subscriptions.updateSubscription(
+          user?.subscriptionId?.subscriptionId,
           selectedPlan?.priceId,
           token
         );
@@ -73,7 +78,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
         setClientSecret(subscription.clientSecret);
       } else {
         if (user?.stripeId && selectedPlan) {
-          const subscription = await UserPlans.createSubscription(
+          const subscription = await Subscriptions.createSubscription(
             user.stripeId,
             selectedPlan?.priceId,
             token
@@ -113,6 +118,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
               <SubscriptionForm
                 selectedPlan={selectedPlan}
                 closeModal={closeModal}
+                getUserSubscription={getUserSubscription}
               />
             </Elements>
           )}

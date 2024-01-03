@@ -1,4 +1,5 @@
 "use client";
+import { setUser } from "@/redux/features/user-slice";
 import Cookie from "js-cookie";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -8,14 +9,19 @@ import {
 } from "react-icons/io5";
 import { MdOutlineDashboardCustomize } from "react-icons/md";
 import { TbLogout2 } from "react-icons/tb";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const Sidebar = () => {
   const router = useRouter();
   const param = usePathname();
+  const dispatch = useDispatch();
 
   const handleLogout = () => {
+    dispatch(setUser(null));
     Cookie.remove("token");
     Cookie.remove("role");
+    toast.success("logging out...");
     router.refresh();
   };
 
