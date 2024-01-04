@@ -5,6 +5,9 @@ import Cookie from "js-cookie";
 import { useAppSelector } from "@/redux/store";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
+import User from "@/services/user";
+import { useDispatch } from "react-redux";
+import { setUser } from "@/redux/features/user-slice";
 
 const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
   ssr: false,
@@ -13,30 +16,59 @@ const CustomTextEditor = dynamic(() => import("./CustomTextEditor"), {
 const VideoForm = () => {
   const { user } = useAppSelector((state) => state.userReducer.value);
   const router = useRouter();
+  const dispatch = useDispatch();
+  const token = Cookie.get("token");
 
   const [title, setTitle] = useState("");
   const [link, setLink] = useState("");
   const [descriptionContent, setDescriptionContent] = useState("");
   const [editorHtml, setEditorHtml] = useState("");
 
+  const handleGetUser = async () => {
+    try {
+      const data = await User.getUser(token);
+      if (data?.status === 200) {
+        dispatch(setUser(data.user));
+      } else {
+        toast.error("Error occured");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const token = Cookie.get("token");
-    if (user?.subscriptionId) {
+    if (
+      user?.subscriptionId?.subscriptionId &&
+      user?.subscriptionId?.noOfVideosRemaining <= 0
+    ) {
+      toast.error("Please upgrade your plan... Redirecting to pricing page");
+      setTimeout(() => {
+        router.push("/pricing");
+      }, 3000);
+    } else if (
+      user?.subscriptionId?.subscriptionId &&
+      user?.subscriptionId?.paymentStatus === "approved" &&
+      user?.subscriptionId?.noOfVideosRemaining > 0
+    ) {
       try {
         if (title && link && descriptionContent) {
-          await AddProject.postAddProject(
+          const data = await AddProject.postAddProject(
             token,
             title,
             link,
             descriptionContent,
             user?.id
           );
-          setTitle("");
-          setLink("");
-          setDescriptionContent("");
-          setEditorHtml("");
-          toast.success("Project has been added");
+          if (data.status === 200) {
+            setTitle("");
+            setLink("");
+            setDescriptionContent("");
+            setEditorHtml("");
+            toast.success("Project has been added");
+            handleGetUser();
+          }
         } else {
           toast.error("Fields can't be empty");
         }

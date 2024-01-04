@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import Cookie from "js-cookie";
 import { useDispatch } from "react-redux";
 import { setUser } from "@/redux/features/user-slice";
+import { useRouter } from "next/navigation";
 
 interface ISubscriptionFormTypes {
   selectedPlan: PlanDataType | null;
@@ -24,21 +25,21 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
   closeModal,
   getUserSubscription,
 }) => {
+  const router = useRouter();
+  const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string>("");
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAppSelector((state) => state.userReducer.value);
-  const dispatch = useDispatch();
 
   const verifyPayment = async () => {
     const token = Cookie.get("token");
 
-    if (user?.subscriptionId)
+    if (user?.subscriptionId) {
       await Subscriptions.verifySubscription(user?.subscriptionId._id, token)
         .then(async (data) => {
           await getUserSubscription();
-
           dispatch(
             setUser({
               ...user,
@@ -50,8 +51,8 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
           toast.error(error.message);
           console.log(error);
         });
+    }
   };
-
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
@@ -63,7 +64,7 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
     const data = await stripe.confirmPayment({
       elements,
       confirmParams: {
-        return_url: "http://localhost:3000/dashboard",
+        return_url: `${process.env.NEXT_PUBLIC_FE_DOMAIN}/user/dashboard`,
       },
       redirect: "if_required",
     });
@@ -72,6 +73,9 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
         toast.success("Payment Succeeded!");
         setMessage("Payment succeeded!");
         verifyPayment();
+        setTimeout(() => {
+          router.push("/user/dashboard");
+        }, 1500);
         break;
       case "processing":
         toast.info("Your payment is processing!");
@@ -86,7 +90,9 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
         toast.error("Something went wrong.");
         break;
     }
+
     closeModal();
+
     if (data.error)
       if (
         data.error.type === "card_error" ||
@@ -102,8 +108,6 @@ const SubscriptionForm: FC<ISubscriptionFormTypes> = ({
   };
 
   useEffect(() => {
-    verifyPayment();
-
     if (!stripe) {
       return;
     }
