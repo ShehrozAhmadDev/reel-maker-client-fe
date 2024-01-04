@@ -35,13 +35,15 @@ const Pricing = () => {
       .finally(() => {});
   };
   const handleSelectPlan = (plan: PlanDataType) => {
-    if (userSubscriptions) {
-      toast.error("Please cancel your previous subscription");
-      return;
-    }
+    console.log({ userSubscriptions });
     if (!user) {
       router.push("/login");
+      return;
     } else {
+      if (userSubscriptions && userSubscriptions.status === "active") {
+        toast.error("Please cancel your previous subscription");
+        return;
+      }
       setSelectedPlan(plan);
       setShowModal(true);
     }
@@ -52,12 +54,13 @@ const Pricing = () => {
       if (user?.subscriptionId) {
         const token = Cookie?.get("token");
         const data = await Subscriptions.cancelSubscription(
-          user?.subscriptionId?.subscriptionId,
+          user?.subscriptionId?._id,
           token
         );
         if (data.status === 200) {
           toast.success("Plan cancelled successfully");
           dispatch(setUser({ ...user, subscriptionId: null }));
+          getUserSubscription();
         }
       }
     } catch (error) {

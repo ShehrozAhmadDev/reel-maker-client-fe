@@ -68,32 +68,28 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
             setClientSecret(subscription.clientSecret);
           }
         }
-      } else if (user?.stripeId && user?.subscriptionId && selectedPlan) {
-        const subscription = await Subscriptions.updateSubscription(
-          user?.subscriptionId?.subscriptionId,
-          selectedPlan?.priceId,
-          token
-        );
-
-        setClientSecret(subscription.clientSecret);
       } else {
+        console.log("In Else");
         if (user?.stripeId && selectedPlan) {
           const subscription = await Subscriptions.createSubscription(
             user.stripeId,
             selectedPlan?.priceId,
             token
           );
-          dispatch(
-            setUser({
-              ...user,
-              subscriptionId: subscription.subscriptionId,
-            })
-          );
-          setClientSecret(subscription.clientSecret);
+          if (subscription.status === 200) {
+            dispatch(
+              setUser({
+                ...user,
+                subscriptionId: subscription.user.subscriptionId,
+              })
+            );
+            setClientSecret(subscription.clientSecret);
+          }
         }
       }
     } catch (error) {
       console.error(error);
+      console.log(error);
     }
   };
 
@@ -102,6 +98,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({
       createCustomer();
     }
   }, [selectedPlan]);
+  console.log({ clientSecret });
   return (
     <Modal
       isOpen={isOpen}

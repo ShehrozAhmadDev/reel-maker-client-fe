@@ -13,10 +13,11 @@ export interface PlanDataType {
 }
 
 export interface SubscriptionType {
-  subId: string,
-  startDate: number,
-  endDate: number,
-  customerId: string,
-  productId: string,
-  priceId: string
+  subId: string;
+  startDate: number;
+  endDate: number;
+  customerId: string;
+  productId: string;
+  priceId: string;
+  status: string;
 }
