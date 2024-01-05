@@ -22,43 +22,51 @@ const Navbar = () => {
     router.refresh();
   };
 
+  const navItems = [
+    {
+      title: "Home",
+      link: "/",
+    },
+    {
+      title: "About Us",
+      link: "/",
+    },
+    {
+      title: "Pricing",
+      link: "/pricing",
+    },
+  ];
+
   return (
     <nav className=" bg-gradient-to-r from-blue-500 to-purple-600 p-6">
       <MainContainer>
         <div className="flex items-center justify-between flex-wrap">
-          <div
-            onClick={() => router.push("/")}
-            className="flex items-center text-white mr-6 space-x-2 cursor-pointer"
-          >
-            <Image
-              src={"/logo.png"}
-              alt="logo"
-              width={50}
-              height={50}
-              className="w-[40px] object-contain"
-            />
-            <p className="text-[#e61072] text-xl font-bold">Hexeel</p>
+          <div className="flex items-center text-white mr-6 space-x-16 cursor-pointer">
+            <span
+              className="flex items-center space-x-2"
+              onClick={() => router.push("/")}
+            >
+              <Image
+                src={"/logo.png"}
+                alt="logo"
+                width={50}
+                height={50}
+                className="w-[40px] object-contain"
+              />
+              <p className="text-[#e61072] text-xl font-bold">Hexeel</p>
+            </span>
+
+            <span className="flex space-x-8 text-lg font-bold text-white">
+              {navItems.map((item) => (
+                <p
+                  onClick={() => router.push(item.link)}
+                  className="mr-4 cursor-pointer hover:opacity-70 transition-all duration-300"
+                >
+                  {item.title}
+                </p>
+              ))}
+            </span>
           </div>
-          <span className="flex space-x-8 text-lg font-bold text-white">
-            <p
-              onClick={() => router.push("/")}
-              className="mr-4 cursor-pointer hover:underline"
-            >
-              Home
-            </p>
-            <p
-              onClick={() => router.push("/")}
-              className="mr-4 cursor-pointer hover:underline"
-            >
-              About Us
-            </p>
-            <p
-              onClick={() => router.push("/pricing")}
-              className="mr-4 cursor-pointer hover:underline"
-            >
-              Pricing
-            </p>
-          </span>
           {!verify ? (
             <div className="flex">
               <div className="flex">

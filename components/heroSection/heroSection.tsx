@@ -7,10 +7,10 @@ const HeroSection = () => {
     <div className="flex flex-col items-center px-5 h-screen justify-center bg-[#0d0d10] to-pink-500">
       <MainContainer>
         <span className="w-[40%] space-y-5 text-center text-white">
-          <h1 className="text-3xl font-bold gradient-text">
+          <h1 className="text-4xl font-bold gradient-text w-[40%] mx-auto">
             Unlock Your Video Editing Potential with Hexeel Master
           </h1>
-          <p>
+          <p className="text-2xl mx-auto max-w-prose text-center text-white/80">
             Experience seamless video uploading, professional editing, and
             real-time chat for a truly immersive video editing journey
           </p>

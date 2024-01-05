@@ -89,11 +89,9 @@ const Subscriptions = {
   verifySubscription: async (subscriptionId: string, token?: string) => {
     const config = {
       headers: {
-        Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1OTNiNmFkMGYyMTEzNGIxMWY4NjFkZCIsImlhdCI6MTcwNDI4NjEzOSwiZXhwIjoxNzA0MzcyNTM5fQ.7Wa3Kr4q-wXmqRNxMtH8AHLYkBBNhJ6EkFdAeiTz9AI`,
+        Authorization: `Bearer ${token}`,
       },
     };
-    console.log(subscriptionId);
-    console.log(token);
     return axios
       .post(
         `${baseUrl}/subscription/verifyPayment/${subscriptionId}`,

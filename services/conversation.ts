@@ -23,7 +23,6 @@ const Conversation = {
     };
     const body = {
       senderId: userId,
-      receiverId: "6593b60fd2cb3f4a49180156",
     };
     return await axios
       .post(`${baseUrl}/conversation/`, body, config)
